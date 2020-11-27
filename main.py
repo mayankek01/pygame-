@@ -196,7 +196,7 @@ while running:
             enemyY[i] = random.randint(50, 150)
 
         enemy(enemyX[i], enemyY[i], i)
-
+        # collision enemy to player
         collision_player = is_collision_player(enemyX[i], enemyY[i], playerX, playerY)
         if collision_player:
             enemyX[i] = random.randint(0, 735)
