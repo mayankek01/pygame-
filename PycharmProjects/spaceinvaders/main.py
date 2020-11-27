@@ -27,6 +27,7 @@ playerImg = pygame.image.load("spaceship.png")
 playerX = 370
 playerY = 480
 playerX_change = 0
+playerY_change = 0
 
 # enemy
 enemyImg = []
@@ -58,6 +59,13 @@ font = pygame.font.Font('freesansbold.ttf', 32)
 textX = 10
 textY = 10
 
+# life
+life_left = 3
+font1 = pygame.font.Font('freesansbold.ttf', 32)
+
+text1X = 30
+text1Y = 45
+
 # game over text
 over_font = pygame.font.Font('freesansbold.ttf', 64)
 
@@ -67,9 +75,14 @@ def show_score(x, y):
     screen.blit(score, (x, y))
 
 
+def show_life(x, y):
+    life = font1.render("life :" + str(life_left), True, (255, 255, 255))
+    screen.blit(life, (x, y))
+
+
 def game_over_text():
     over_text = over_font.render("GAME OVER", True, (255, 255, 255))
-    screen.blit(over_text,(200, 250))
+    screen.blit(over_text, (200, 250))
 
 
 def player(x, y):  # blit means drawing
@@ -94,7 +107,14 @@ def is_collision(enemy_x, enemy_y, bullet_x, bullet_y):
         return False
 
 
-# Game loop
+def is_collision_player(enemy_x, enemy_y, player_x, player_y):
+    distance = math.sqrt((math.pow(enemy_x - player_x + 2, 2)) + (math.pow(enemy_y - player_y + 2, 2)))
+    if distance < 25:
+        return True
+    else:
+        return False
+
+
 running = True
 while running:
     # Rgb values background of the window
@@ -111,32 +131,47 @@ while running:
                 playerX_change = -5
             if event.key == pygame.K_RIGHT:
                 playerX_change = 5
+            if event.key == pygame.K_DOWN:
+                playerY_change = 5
+            if event.key == pygame.K_UP:
+                playerY_change = -5
+
             if event.key == pygame.K_SPACE:
                 if bullet_state == "ready":
                     bullet_sound = mixer.Sound("laser.wav")
                     bullet_sound.play()
                     bulletX = playerX  # get the current x coordinate of the spaceship
+                    bulletY = playerY
                     fire_bullet(bulletX, bulletY)
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 playerX_change = 0
+            if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                playerY_change = 0
 
     # checking for boundaries of spaceship
     playerX += playerX_change
+    playerY += playerY_change
 
     if playerX <= 0:
         playerX = 0
     elif playerX >= 736:
         playerX = 736
 
+    if playerY <= 0:
+        playerY = 0
+    elif playerY >= 538:
+        playerY = 538
+
     #  enemy spaceship movement
     for i in range(num_of_enemies):
 
         # game over
-        if enemyY[i] > 480:
+        if life_left == 0:
             for j in range(num_of_enemies):
                 enemyY[j] = 2000
+            playerX = 2000
 
             game_over_text()
             break
@@ -149,7 +184,7 @@ while running:
             enemyX_change[i] = -4
             enemyY[i] += enemyY_change[i]
 
-        # collision
+        # collision bullet to enemy
         collision = is_collision(enemyX[i], enemyY[i], bulletX, bulletY)
         if collision:
             collision_sound = mixer.Sound("explosion.wav")
@@ -159,6 +194,18 @@ while running:
             score_value += 1
             enemyX[i] = random.randint(0, 735)
             enemyY[i] = random.randint(50, 150)
+
+        enemy(enemyX[i], enemyY[i], i)
+
+        collision_player = is_collision_player(enemyX[i], enemyY[i], playerX, playerY)
+        if collision_player:
+            enemyX[i] = random.randint(0, 735)
+            enemyY[i] = random.randint(50, 150)
+            collision_sound = mixer.Sound("explosion.wav")
+            collision_sound.play()
+            life_left -= 1
+            playerX = 370
+            playerY = 480
 
         enemy(enemyX[i], enemyY[i], i)
 
@@ -172,4 +219,5 @@ while running:
 
     player(playerX, playerY)
     show_score(textX, textY)
+    show_life(text1X, text1Y)
     pygame.display.update()
