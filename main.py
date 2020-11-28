@@ -100,10 +100,10 @@ def main_menu():
         if button_2.collidepoint((mx, my)):
             if click:
                 pass
-        pygame.draw.rect(screen, (255, 0, 0), button_1)
-        draw_text('play', font, (255, 255, 255), screen, 380, 308)
-        pygame.draw.rect(screen, (255, 0, 0), button_2)
-        draw_text('option', font, (255, 255, 255), screen, 365, 410)
+        pygame.draw.rect(screen, (220, 10, 0), button_1, False, 30)
+        draw_text('Play', font, (255, 255, 255), screen, 385, 308)
+        pygame.draw.rect(screen, (220, 10, 0), button_2, False, 30)
+        draw_text('Options', font, (255, 255, 255), screen, 365, 410)
 
         click = False
 
