@@ -12,9 +12,11 @@ pygame.mixer.init()
 # creating a screen
 screen = pygame.display.set_mode((800, 600))  # width , height or x , y axis
 
-# background
-background = pygame.image.load("background.png")
+# background for running game
+background = pygame.image.load("backgroundgame.jpg")
 
+# background for menu screen
+background2 = pygame.image.load("backgroundmenu.jpg")
 
 # caption and icon
 pygame.display.set_caption("Space Invaders")
@@ -40,8 +42,8 @@ for i in range(num_of_enemies):
     enemyImg.append(pygame.image.load("ufo.png"))
     enemyX.append(random.randint(0, 735))
     enemyY.append(random.randint(50, 150))
-    enemyX_change.append(4)
-    enemyY_change.append(40)
+    enemyX_change.append(1)
+    enemyY_change.append(20)
 
 # bullet
 bulletImg = pygame.image.load("bullet.png")
@@ -84,6 +86,7 @@ def main_menu():
     mixer.music.play(-1)
     while True:
         screen.fill((0, 0, 0))
+        screen.blit(background2, (0, 0))
         draw_text('Main Menu', over_font, (255, 255, 255), screen, 185, 170)
 
         mx, my = pygame.mouse.get_pos()
@@ -132,7 +135,7 @@ def show_life(x, y):
 
 def game_over_text():
     over_text = over_font.render("GAME OVER", True, (255, 255, 255))
-    screen.blit(over_text, (200, 250))
+    screen.blit(over_text, (150, 280))
 
 
 def player(x, y):  # blit means drawing
@@ -234,10 +237,10 @@ def game():
 
             enemyX[i] += enemyX_change[i]
             if enemyX[i] <= 0:
-                enemyX_change[i] = 4
+                enemyX_change[i] = 2
                 enemyY[i] += enemyY_change[i]
             elif enemyX[i] >= 736:
-                enemyX_change[i] = -4
+                enemyX_change[i] = -2
                 enemyY[i] += enemyY_change[i]
 
             # collision bullet to enemy
